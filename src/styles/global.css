@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #111118;
-  --color-bg-tertiary: #1a1a24;
-  --color-bg-elevated: #1e1e2a;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-tertiary: #f1f3f5;
+  --color-bg-elevated: #e9ecef;
 
-  --color-text-primary: #f1f1f3;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #71717a;
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #495057;
+  --color-text-muted: #868e96;
 
   --color-accent: #f59e0b;
   --color-accent-hover: #d97706;
-  --color-accent-subtle: rgba(245, 158, 11, 0.15);
+  --color-accent-subtle: rgba(245, 158, 11, 0.1);
 
   --color-steel: #94a3b8;
   --color-steel-dark: #475569;
@@ -60,14 +60,16 @@
 }
 
 @utility card {
-  background-color: var(--color-bg-secondary);
-  border: 1px solid rgb(148 163 184 / 0.1);
+  background-color: var(--color-bg-primary);
+  border: 1px solid rgb(148 163 184 / 0.15);
   border-radius: 0.75rem;
   padding: 1.5rem;
-  transition: border-color 0.3s, transform 0.3s;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 
   &:hover {
-    border-color: rgb(148 163 184 / 0.25);
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 16px rgb(245 158 11 / 0.1);
     transform: translateY(-2px);
   }
 }
