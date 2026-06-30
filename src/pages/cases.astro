@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroBanner from '../components/HeroBanner.astro';
+import SectionWrapper from '../components/SectionWrapper.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import { getCollection } from 'astro:content';
+import { buildPageMeta, buildBreadcrumbLd } from '../utils/seo';
+
+const allCases = await getCollection('cases');
+const sortedCases = allCases.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const pageMeta = buildPageMeta({
+  title: '案例展示',
+  description: '协诚激光客户案例展示，涵盖汽车零部件、建筑结构件、机械设备外壳、装饰五金等多个行业领域。',
+  keywords: '激光切割案例,钣金加工案例,金属加工案例,客户案例',
+  jsonLd: [
+    buildBreadcrumbLd([{ name: '首页', url: '/' }, { name: '案例展示', url: '/cases' }]),
+  ],
+});
+---
+
+<BaseLayout meta={pageMeta}>
+  <HeroBanner title="案例展示" subtitle="用实力说话，见证我们的加工品质" />
+
+  <SectionWrapper>
+    <script>
+      function filterCases(industry: string) {
+        document.querySelectorAll('.case-card').forEach((card) => {
+          const el = card as HTMLElement;
+          if (industry === 'all' || el.dataset.industry === industry) {
+            el.style.display = '';
+          } else {
+            el.style.display = 'none';
+          }
+        });
+
+        document.querySelectorAll('.filter-btn').forEach((btn) => {
+          const b = btn as HTMLElement;
+          if (b.dataset.filter === industry) {
+            b.classList.add('bg-accent', 'text-bg-primary');
+            b.classList.remove('bg-bg-tertiary', 'text-text-secondary', 'hover:text-text-primary');
+          } else {
+            b.classList.remove('bg-accent', 'text-bg-primary');
+            b.classList.add('bg-bg-tertiary', 'text-text-secondary', 'hover:text-text-primary');
+          }
+        });
+      }
+    </script>
+
+    <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+      <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-accent text-bg-primary transition-colors cursor-pointer" data-filter="all" onclick="filterCases('all')">
+        全部案例
+      </button>
+      <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-bg-tertiary text-text-secondary hover:text-text-primary transition-colors cursor-pointer" data-filter="汽车制造" onclick="filterCases('汽车制造')">
+        汽车制造
+      </button>
+      <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-bg-tertiary text-text-secondary hover:text-text-primary transition-colors cursor-pointer" data-filter="建筑工程" onclick="filterCases('建筑工程')">
+        建筑工程
+      </button>
+      <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-bg-tertiary text-text-secondary hover:text-text-primary transition-colors cursor-pointer" data-filter="机械设备" onclick="filterCases('机械设备')">
+        机械设备
+      </button>
+      <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-bg-tertiary text-text-secondary hover:text-text-primary transition-colors cursor-pointer" data-filter="家具装饰" onclick="filterCases('家具装饰')">
+        家具装饰
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {sortedCases.map((c) => (
+        <div class="case-card" data-industry={c.data.industry}>
+          <CaseStudyCard
+            title={c.data.title}
+            industry={c.data.industry}
+            date={c.data.date}
+            summary={c.data.results}
+            image={c.data.image}
+            href={`/cases/${c.slug}`}
+          />
+        </div>
+      ))}
+    </div>
+  </SectionWrapper>
+</BaseLayout>

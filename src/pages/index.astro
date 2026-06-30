@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroBanner from '../components/HeroBanner.astro';
+import SectionWrapper from '../components/SectionWrapper.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Button from '../components/ui/Button.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import EquipmentCard from '../components/EquipmentCard.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import { getCollection } from 'astro:content';
+import { buildPageMeta, buildOrganizationLd, buildLocalBusinessLd } from '../utils/seo';
+import siteData from '../data/site.json';
+
+const services = await getCollection('services');
+const featuredServices = services
+  .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+  .slice(0, 4);
+
+const equipment = await getCollection('equipment');
+const featuredEquipment = equipment
+  .filter((e) => e.data.featured)
+  .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+  .slice(0, 3);
+
+const cases = await getCollection('cases');
+const featuredCases = cases
+  .filter((c) => c.data.featured)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const pageMeta = buildPageMeta({
+  title: `${siteData.company.name} - 专业钢材激光切割加工服务`,
+  keywords: '激光切割,钢材切割,钣金加工,光纤激光切割,激光切割加工厂,协诚激光',
+  jsonLd: [buildOrganizationLd(), buildLocalBusinessLd()],
+});
+
+const whyUs = [
+  { title: '高精度', desc: '进口激光设备，定位精度 ±0.03mm，满足精密加工需求', icon: 'target' },
+  { title: '快速响应', desc: '自动化生产线，24小时连续作业，急单加急处理', icon: 'zap' },
+  { title: '丰富经验', desc: '十年行业积累，服务数百家企业，熟悉各类加工工艺', icon: 'award' },
+  { title: '质量保证', desc: '严格质检流程，出厂全检，不良品免费重做', icon: 'shield' },
+];
+---
+
+<BaseLayout meta={pageMeta}>
+  <!-- Hero -->
+  <HeroBanner title={siteData.company.name} subtitle={siteData.company.slogan} height="full">
+    <div class="flex items-center justify-center gap-4 mt-8">
+      <Button href="/contact" variant="primary" size="lg">获取报价</Button>
+      <Button href="/services" variant="outline" size="lg">了解更多</Button>
+    </div>
+  </HeroBanner>
+
+  <!-- Company Intro -->
+  <SectionWrapper>
+    <SectionHeading title="公司简介" subtitle={siteData.company.description} />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+      <div class="text-center p-4">
+        <div class="text-3xl font-bold text-accent mb-2">10+</div>
+        <div class="text-text-muted text-sm">年行业经验</div>
+      </div>
+      <div class="text-center p-4">
+        <div class="text-3xl font-bold text-accent mb-2">8+</div>
+        <div class="text-text-muted text-sm">台先进设备</div>
+      </div>
+      <div class="text-center p-4">
+        <div class="text-3xl font-bold text-accent mb-2">500+</div>
+        <div class="text-text-muted text-sm">服务企业客户</div>
+      </div>
+      <div class="text-center p-4">
+        <div class="text-3xl font-bold text-accent mb-2">5000m²</div>
+        <div class="text-text-muted text-sm">厂房面积</div>
+      </div>
+    </div>
+  </SectionWrapper>
+
+  <!-- Core Services -->
+  <SectionWrapper bg="secondary">
+    <SectionHeading title="核心服务" subtitle="一站式金属加工解决方案，满足您的各类需求" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {featuredServices.map((service) => (
+        <ServiceCard
+          title={service.data.title}
+          summary={service.data.summary}
+          icon={service.data.icon}
+          href="/services"
+        />
+      ))}
+    </div>
+  </SectionWrapper>
+
+  <!-- Equipment Showcase -->
+  <SectionWrapper>
+    <SectionHeading title="先进设备" subtitle="配备多台大功率光纤激光切割设备，确保加工品质" />
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {featuredEquipment.map((eq) => (
+        <EquipmentCard
+          name={eq.data.name}
+          model={eq.data.model}
+          specs={eq.data.specs}
+          image={eq.data.image}
+        />
+      ))}
+    </div>
+    <div class="text-center mt-10">
+      <Button href="/about" variant="outline">查看全部设备</Button>
+    </div>
+  </SectionWrapper>
+
+  <!-- Why Choose Us -->
+  <SectionWrapper bg="secondary">
+    <SectionHeading title="为什么选择我们" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {whyUs.map((item) => (
+        <div class="card text-center group">
+          <div class="w-14 h-14 rounded-xl bg-accent-subtle flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/20 transition-colors">
+            <span class="text-2xl">
+              {item.icon === 'target' && '🎯'}
+              {item.icon === 'zap' && '⚡'}
+              {item.icon === 'award' && '🏆'}
+              {item.icon === 'shield' && '🛡️'}
+            </span>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">{item.title}</h3>
+          <p class="text-text-secondary text-sm">{item.desc}</p>
+        </div>
+      ))}
+    </div>
+  </SectionWrapper>
+
+  <!-- Featured Cases -->
+  <SectionWrapper>
+    <SectionHeading title="精选案例" subtitle="用实力说话，见证我们的加工品质" />
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {featuredCases.map((c) => (
+        <CaseStudyCard
+          title={c.data.title}
+          industry={c.data.industry}
+          date={c.data.date}
+          summary={c.data.results}
+          image={c.data.image}
+          href={`/cases/${c.slug}`}
+        />
+      ))}
+    </div>
+    <div class="text-center mt-10">
+      <Button href="/cases" variant="outline">查看全部案例</Button>
+    </div>
+  </SectionWrapper>
+
+  <!-- CTA -->
+  <SectionWrapper bg="secondary">
+    <div class="text-center max-w-2xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">需要激光切割加工报价？</h2>
+      <p class="text-text-muted text-lg mb-8">
+        联系我们，免费获取加工方案和报价，专业团队为您服务
+      </p>
+      <div class="flex items-center justify-center gap-4">
+        <Button href="/contact" variant="primary" size="lg">立即咨询</Button>
+        <a href={`tel:${siteData.company.phone}`} class="text-text-primary font-semibold hover:text-accent transition-colors">
+          {siteData.company.phone}
+        </a>
+      </div>
+    </div>
+  </SectionWrapper>
+</BaseLayout>

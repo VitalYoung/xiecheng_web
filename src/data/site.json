@@ -1,0 +1,22 @@
+{
+  "company": {
+    "name": "协诚激光",
+    "nameEn": "Xiecheng Laser",
+    "slogan": "精密激光切割，用心服务每一位客户",
+    "description": "协诚激光是一家专业从事钢材激光切割加工的现代化企业，拥有多台大功率光纤激光切割设备，为汽车、机械、建筑、装饰等行业提供高精度金属加工服务。",
+    "founded": 2015,
+    "phone": "138-0000-0000",
+    "email": "info@xiechenglaser.com",
+    "address": "广东省佛山市顺德区XX路XX号",
+    "businessHours": "周一至周六 8:00-18:00",
+    "wechatQrCode": "/images/wechat-qr.png"
+  },
+  "site": {
+    "url": "https://www.xiechenglaser.com",
+    "locale": "zh_CN"
+  },
+  "seo": {
+    "baiduVerification": "",
+    "googleVerification": ""
+  }
+}

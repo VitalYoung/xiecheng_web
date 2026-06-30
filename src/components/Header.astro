@@ -1,0 +1,50 @@
+---
+import siteData from '../data/site.json';
+import MobileMenu from './ui/MobileMenu.astro';
+
+const navLinks = [
+  { label: '首页', href: '/' },
+  { label: '服务项目', href: '/services' },
+  { label: '案例展示', href: '/cases' },
+  { label: '关于我们', href: '/about' },
+  { label: '联系我们', href: '/contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 bg-bg-primary/90 backdrop-blur-lg border-b border-steel/10">
+  <div class="container-page flex items-center justify-between h-16 md:h-20">
+    <a href="/" class="flex items-center gap-3 no-underline">
+      <div class="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+        <span class="text-bg-primary font-bold text-xl">协</span>
+      </div>
+      <div class="hidden sm:block">
+        <div class="text-text-primary font-bold text-lg leading-tight">{siteData.company.name}</div>
+        <div class="text-text-muted text-xs">{siteData.company.nameEn}</div>
+      </div>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-1">
+      {navLinks.map((link) => {
+        const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+        return (
+          <a
+            href={link.href}
+            class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isActive
+                ? 'text-accent bg-accent-subtle'
+                : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+            }`}
+          >
+            {link.label}
+          </a>
+        );
+      })}
+    </nav>
+
+    <div class="relative">
+      <MobileMenu {navLinks} {currentPath} />
+    </div>
+  </div>
+</header>

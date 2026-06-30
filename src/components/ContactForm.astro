@@ -1,0 +1,145 @@
+---
+import siteData from '../data/site.json';
+import { getCollection } from 'astro:content';
+
+const services = await getCollection('services');
+const serviceOptions = services
+  .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+  .map((s) => ({ value: s.data.title, label: s.data.title }));
+---
+
+<div class="bg-bg-secondary rounded-xl p-6 md:p-8 border border-steel/10">
+  <h2 class="text-2xl font-bold mb-6">获取报价 / 在线咨询</h2>
+  <form id="contact-form" class="space-y-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div>
+        <label for="name" class="block text-sm font-medium text-text-primary mb-1.5">
+          姓名 <span class="text-accent">*</span>
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          placeholder="请输入您的姓名"
+          class="w-full px-4 py-2.5 rounded-lg bg-bg-elevated border border-steel/20 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
+        />
+      </div>
+      <div>
+        <label for="company" class="block text-sm font-medium text-text-primary mb-1.5">
+          公司名称
+        </label>
+        <input
+          type="text"
+          id="company"
+          name="company"
+          placeholder="请输入公司名称（选填）"
+          class="w-full px-4 py-2.5 rounded-lg bg-bg-elevated border border-steel/20 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div>
+        <label for="phone" class="block text-sm font-medium text-text-primary mb-1.5">
+          电话 <span class="text-accent">*</span>
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          required
+          placeholder="请输入联系电话"
+          class="w-full px-4 py-2.5 rounded-lg bg-bg-elevated border border-steel/20 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
+        />
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-text-primary mb-1.5">
+          邮箱
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="请输入邮箱（选填）"
+          class="w-full px-4 py-2.5 rounded-lg bg-bg-elevated border border-steel/20 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label for="serviceType" class="block text-sm font-medium text-text-primary mb-1.5">
+        服务类型
+      </label>
+      <select
+        id="serviceType"
+        name="serviceType"
+        class="w-full px-4 py-2.5 rounded-lg bg-bg-elevated border border-steel/20 text-text-primary focus:outline-none focus:border-accent/50 transition-colors"
+      >
+        <option value="">请选择服务类型</option>
+        {serviceOptions.map((s) => (
+          <option value={s.value}>{s.label}</option>
+        ))}
+        <option value="其他">其他</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="message" class="block text-sm font-medium text-text-primary mb-1.5">
+        加工需求 <span class="text-accent">*</span>
+      </label>
+      <textarea
+        id="message"
+        name="message"
+        required
+        rows="4"
+        placeholder="请描述您的加工需求：材料类型、厚度、数量、尺寸等"
+        class="w-full px-4 py-2.5 rounded-lg bg-bg-elevated border border-steel/20 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none"
+      ></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full py-3 px-6 bg-accent text-bg-primary font-semibold rounded-lg hover:bg-accent-hover transition-colors shadow-lg shadow-accent-subtle cursor-pointer"
+    >
+      提交咨询
+    </button>
+
+    <p id="form-message" class="text-center text-sm hidden"></p>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const msgEl = document.getElementById('form-message') as HTMLParagraphElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    msgEl.classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      msgEl.classList.remove('hidden');
+      if (res.ok && data.success) {
+        msgEl.className = 'text-center text-sm text-green-500';
+        msgEl.textContent = data.message || '提交成功，我们会尽快与您联系！';
+        form.reset();
+      } else {
+        msgEl.className = 'text-center text-sm text-red-500';
+        msgEl.textContent = data.error || '提交失败，请稍后重试';
+      }
+    } catch {
+      msgEl.classList.remove('hidden');
+      msgEl.className = 'text-center text-sm text-red-500';
+      msgEl.textContent = '网络错误，请稍后重试';
+    }
+  });
+</script>

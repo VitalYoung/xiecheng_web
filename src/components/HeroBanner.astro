@@ -1,0 +1,38 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  height?: 'full' | 'medium';
+  class?: string;
+}
+
+const { title, subtitle, height = 'medium', class: extraClass = '' } = Astro.props;
+const heightClass = height === 'full' ? 'min-h-screen' : 'min-h-[40vh] md:min-h-[50vh]';
+---
+
+<section
+  class={`relative ${heightClass} flex items-center justify-center overflow-hidden bg-bg-secondary ${extraClass}`}
+>
+  <!-- Background pattern -->
+  <div class="absolute inset-0 opacity-[0.03]">
+    <div
+      class="absolute inset-0"
+      style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, currentColor 10px, currentColor 11px);"
+    ></div>
+  </div>
+
+  <!-- Accent glow -->
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-accent/5 blur-[120px]"></div>
+
+  <div class="container-page relative z-10 text-center py-20">
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+      {title}
+    </h1>
+    {subtitle && (
+      <p class="text-text-muted text-lg md:text-xl max-w-2xl mx-auto">
+        {subtitle}
+      </p>
+    )}
+    <slot />
+  </div>
+</section>

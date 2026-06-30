@@ -1,0 +1,39 @@
+---
+interface Props {
+  title: string;
+  industry: string;
+  date: Date;
+  summary: string;
+  image?: string;
+  href: string;
+}
+
+const { title, industry, date, summary, image, href } = Astro.props;
+---
+
+<a href={href} class="card block group no-underline">
+  {image && (
+    <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-bg-tertiary">
+      <img
+        src={image}
+        alt={title}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+        width="600"
+        height="338"
+      />
+    </div>
+  )}
+  <div class="flex items-center gap-3 mb-3">
+    <span class="px-2.5 py-0.5 rounded-full bg-accent-subtle text-accent text-xs font-medium">
+      {industry}
+    </span>
+    <time datetime={date.toISOString().split('T')[0]} class="text-text-muted text-xs">
+      {date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' })}
+    </time>
+  </div>
+  <h3 class="text-lg font-semibold mb-2 text-text-primary group-hover:text-accent transition-colors">
+    {title}
+  </h3>
+  <p class="text-text-secondary text-sm leading-relaxed line-clamp-2">{summary}</p>
+</a>

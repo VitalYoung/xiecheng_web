@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroBanner from '../components/HeroBanner.astro';
+import SectionWrapper from '../components/SectionWrapper.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { buildPageMeta, buildLocalBusinessLd } from '../utils/seo';
+import siteData from '../data/site.json';
+
+const pageMeta = buildPageMeta({
+  title: '联系我们',
+  description: '联系协诚激光获取激光切割加工报价。提供电话、微信、邮箱等多种联系方式，欢迎来厂参观考察。',
+  keywords: '激光切割联系方式,激光加工报价,协诚激光联系,钢材加工询价',
+  jsonLd: [buildLocalBusinessLd()],
+});
+---
+
+<BaseLayout meta={pageMeta}>
+  <HeroBanner title="联系我们" subtitle="期待与您的合作" />
+
+  <SectionWrapper>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <ContactForm />
+
+      <div>
+        <h2 class="text-2xl font-bold mb-8">联系方式</h2>
+        <div class="space-y-6 mb-10">
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-lg bg-accent-subtle flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-text-muted text-sm mb-1">电话</div>
+              <a href={`tel:${siteData.company.phone}`} class="text-text-primary font-semibold hover:text-accent transition-colors">
+                {siteData.company.phone}
+              </a>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-lg bg-accent-subtle flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-text-muted text-sm mb-1">邮箱</div>
+              <a href={`mailto:${siteData.company.email}`} class="text-text-primary hover:text-accent transition-colors">
+                {siteData.company.email}
+              </a>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-lg bg-accent-subtle flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-text-muted text-sm mb-1">地址</div>
+              <p class="text-text-primary">{siteData.company.address}</p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-12 h-12 rounded-lg bg-accent-subtle flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-text-muted text-sm mb-1">营业时间</div>
+              <p class="text-text-primary">{siteData.company.businessHours}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map placeholder -->
+        <div class="rounded-xl overflow-hidden border border-steel/10 bg-bg-secondary aspect-[4/3] flex items-center justify-center">
+          <div class="text-center text-text-muted">
+            <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <p class="text-sm">地图加载区域</p>
+            <p class="text-xs mt-1">部署后替换为百度地图或高德地图</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </SectionWrapper>
+</BaseLayout>

@@ -1,0 +1,59 @@
+---
+interface Props {
+  navLinks: { label: string; href: string }[];
+  currentPath: string;
+}
+
+const { navLinks, currentPath } = Astro.props;
+---
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-open-icon');
+    const closeIcon = document.getElementById('menu-close-icon');
+    const isOpen = menu?.classList.toggle('hidden');
+
+    if (isOpen) {
+      openIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+    } else {
+      openIcon?.classList.add('hidden');
+      closeIcon?.classList.remove('hidden');
+    }
+  }
+</script>
+
+<button
+  id="menu-toggle"
+  class="md:hidden p-2 text-text-primary hover:text-accent transition-colors"
+  onclick="toggleMenu()"
+  aria-label="Toggle navigation"
+>
+  <svg id="menu-open-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+  </svg>
+  <svg id="menu-close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+  </svg>
+</button>
+
+<div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 right-0 bg-bg-secondary border-t border-steel/20 shadow-2xl">
+  <nav class="container-page py-4 flex flex-col gap-1">
+    {navLinks.map((link) => {
+      const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+      return (
+        <a
+          href={link.href}
+          class={`px-4 py-3 rounded-lg transition-colors ${
+            isActive
+              ? 'text-accent bg-accent-subtle'
+              : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+          }`}
+        >
+          {link.label}
+        </a>
+      );
+    })}
+  </nav>
+</div>

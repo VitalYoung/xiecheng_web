@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroBanner from '../components/HeroBanner.astro';
+import SectionWrapper from '../components/SectionWrapper.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import EquipmentCard from '../components/EquipmentCard.astro';
+import { getCollection } from 'astro:content';
+import { buildPageMeta, buildBreadcrumbLd } from '../utils/seo';
+import siteData from '../data/site.json';
+
+const equipment = await getCollection('equipment');
+const sortedEquipment = equipment.sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+
+const pageMeta = buildPageMeta({
+  title: '关于我们',
+  description: '协诚激光是一家专业从事钢材激光切割加工的现代化企业，拥有先进的激光切割设备和经验丰富的技术团队。',
+  keywords: '激光切割厂家,协诚激光公司,钢材加工厂,激光切割工厂',
+  jsonLd: [
+    buildBreadcrumbLd([{ name: '首页', url: '/' }, { name: '关于我们', url: '/about' }]),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'AboutPage',
+      name: '关于协诚激光',
+      url: `${siteData.site.url}/about`,
+      description: siteData.company.description,
+    },
+  ],
+});
+
+const storySections = [
+  { year: '2015', title: '公司成立', desc: '协诚激光在佛山成立，初期以单台激光切割机起步，专注服务本地五金加工市场。' },
+  { year: '2018', title: '设备升级', desc: '引进大功率光纤激光切割机，加工能力大幅提升，业务拓展至汽车和机械制造行业。' },
+  { year: '2021', title: '规模扩张', desc: '厂房扩建至5000平方米，增加数控折弯机和管材切割设备，形成切割-折弯-焊接全流程能力。' },
+  { year: '2024', title: '持续发展', desc: '设备总数达8台以上，累计服务客户超500家，成为区域领先的激光切割加工服务商。' },
+];
+---
+
+<BaseLayout meta={pageMeta}>
+  <HeroBanner title="关于我们" subtitle="精密制造，诚信服务" />
+
+  <!-- Company Story -->
+  <SectionWrapper>
+    <SectionHeading title="公司简介" />
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-text-secondary leading-relaxed text-lg mb-8">
+        {siteData.company.description}
+      </p>
+      <p class="text-text-secondary leading-relaxed">
+        公司自成立以来，始终坚持"品质第一、客户至上"的经营理念，不断引进先进设备和技术，培养专业技术团队，
+        致力于为客户提供高精度、短交期、优价格的激光切割加工服务。我们深知每一件产品都承载着客户的信任，
+        因此从原材料进厂到成品出库，每一道工序都严格把控，确保交到客户手中的每一件产品都经得起检验。
+      </p>
+    </div>
+  </SectionWrapper>
+
+  <!-- Timeline -->
+  <SectionWrapper bg="secondary">
+    <SectionHeading title="发展历程" />
+    <div class="max-w-3xl mx-auto">
+      <div class="relative border-l-2 border-steel/20 pl-8 ml-4 space-y-12">
+        {storySections.map((section) => (
+          <div class="relative">
+            <div class="absolute -left-[2.15rem] top-1 w-3 h-3 rounded-full bg-accent ring-4 ring-bg-secondary"></div>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-accent font-bold text-lg">{section.year}</span>
+              <h3 class="text-lg font-semibold">{section.title}</h3>
+            </div>
+            <p class="text-text-secondary">{section.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </SectionWrapper>
+
+  <!-- Full Equipment List -->
+  <SectionWrapper>
+    <SectionHeading title="设备实力" subtitle="先进的生产设备是品质的保障" />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {sortedEquipment.map((eq) => (
+        <EquipmentCard
+          name={eq.data.name}
+          model={eq.data.model}
+          specs={eq.data.specs}
+          image={eq.data.image}
+        />
+      ))}
+    </div>
+  </SectionWrapper>
+
+  <!-- Quality -->
+  <SectionWrapper bg="secondary">
+    <SectionHeading title="品质保障" />
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <div class="card text-center">
+        <div class="text-4xl mb-4">📐</div>
+        <h3 class="text-lg font-semibold mb-2">严格质检</h3>
+        <p class="text-text-secondary text-sm">每道工序经过严格检验，出厂前100%全检，确保尺寸精度和表面质量符合要求</p>
+      </div>
+      <div class="card text-center">
+        <div class="text-4xl mb-4">📋</div>
+        <h3 class="text-lg font-semibold mb-2">品质追溯</h3>
+        <p class="text-text-secondary text-sm">建立完善的品质追溯体系，每批次产品均可追溯到生产工序和操作人员</p>
+      </div>
+      <div class="card text-center">
+        <div class="text-4xl mb-4">🔄</div>
+        <h3 class="text-lg font-semibold mb-2">售后保障</h3>
+        <p class="text-text-secondary text-sm">如因我方加工质量问题，承诺免费重做。客户的满意是我们最大的追求</p>
+      </div>
+    </div>
+  </SectionWrapper>
+</BaseLayout>

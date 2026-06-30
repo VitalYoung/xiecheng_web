@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroBanner from '../../components/HeroBanner.astro';
+import SectionWrapper from '../../components/SectionWrapper.astro';
+import Button from '../../components/ui/Button.astro';
+import { getCollection } from 'astro:content';
+import { buildPageMeta, buildBreadcrumbLd, buildArticleLd } from '../../utils/seo';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('cases');
+  return cases.map((c) => ({ params: { slug: c.slug }, props: { caseItem: c } }));
+}
+
+const { caseItem } = Astro.props;
+const { data, body } = caseItem;
+
+const pageMeta = buildPageMeta({
+  title: `${data.title} - 案例详情`,
+  description: `${data.industry}行业案例：${data.title}。${data.challenge.substring(0, 80)}...`,
+  ogType: 'article',
+  jsonLd: [
+    buildBreadcrumbLd([
+      { name: '首页', url: '/' },
+      { name: '案例展示', url: '/cases' },
+      { name: data.title, url: `/cases/${caseItem.slug}` },
+    ]),
+    buildArticleLd({
+      headline: data.title,
+      description: data.challenge.substring(0, 160),
+      datePublished: data.date.toISOString().split('T')[0],
+      image: data.image,
+    }),
+  ],
+});
+---
+
+<BaseLayout meta={pageMeta}>
+  {data.image && (
+    <section class="relative h-[40vh] md:h-[50vh] bg-bg-secondary overflow-hidden">
+      <img
+        src={data.image}
+        alt={data.title}
+        class="w-full h-full object-cover"
+        width="1200"
+        height="675"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-bg-primary to-transparent"></div>
+    </section>
+  )}
+
+  <SectionWrapper>
+    <div class="max-w-3xl mx-auto">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="px-3 py-1 rounded-full bg-accent-subtle text-accent text-sm font-medium">
+          {data.industry}
+        </span>
+        <time datetime={data.date.toISOString().split('T')[0]} class="text-text-muted text-sm">
+          {data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-8">{data.title}</h1>
+
+      <div class="space-y-12">
+        <!-- Challenge -->
+        <div>
+          <h2 class="text-xl font-semibold flex items-center gap-2 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-accent-subtle flex items-center justify-center text-accent text-sm">挑</span>
+            客户需求与挑战
+          </h2>
+          <p class="text-text-secondary leading-relaxed">{data.challenge}</p>
+        </div>
+
+        <!-- Solution -->
+        <div>
+          <h2 class="text-xl font-semibold flex items-center gap-2 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-accent-subtle flex items-center justify-center text-accent text-sm">解</span>
+            加工方案
+          </h2>
+          <p class="text-text-secondary leading-relaxed">{data.solution}</p>
+        </div>
+
+        <!-- Results -->
+        <div>
+          <h2 class="text-xl font-semibold flex items-center gap-2 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-accent-subtle flex items-center justify-center text-accent text-sm">果</span>
+            加工成果
+          </h2>
+          <p class="text-text-secondary leading-relaxed">{data.results}</p>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      {data.gallery && data.gallery.length > 0 && (
+        <div class="mt-16">
+          <h2 class="text-xl font-semibold mb-6">产品实拍</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.gallery.map((img) => (
+              <div class="aspect-video rounded-xl overflow-hidden bg-bg-tertiary">
+                <img
+                  src={img}
+                  alt={`${data.title} 实拍图`}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                  width="600"
+                  height="338"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- CTA -->
+      <div class="mt-16 p-8 bg-bg-secondary rounded-xl border border-steel/10 text-center">
+        <h2 class="text-2xl font-bold mb-3">有类似的加工需求？</h2>
+        <p class="text-text-muted mb-6">联系我们，专业团队为您提供定制化加工方案</p>
+        <Button href="/contact" variant="primary" size="lg">获取报价</Button>
+      </div>
+    </div>
+  </SectionWrapper>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  bg?: 'primary' | 'secondary';
+  class?: string;
+  id?: string;
+}
+
+const { bg = 'primary', class: extraClass = '', id } = Astro.props;
+const bgClass = bg === 'secondary' ? 'bg-bg-secondary' : 'bg-bg-primary';
+---
+
+<section
+  id={id}
+  class={`py-20 md:py-28 ${bgClass} ${extraClass}`}
+>
+  <div class="container-page">
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,75 @@
+---
+import siteData from '../data/site.json';
+
+const navLinks = [
+  { label: '首页', href: '/' },
+  { label: '服务项目', href: '/services' },
+  { label: '案例展示', href: '/cases' },
+  { label: '关于我们', href: '/about' },
+  { label: '联系我们', href: '/contact' },
+];
+---
+
+<footer class="bg-bg-secondary border-t border-steel/10 pt-20 pb-10">
+  <div class="container-page">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+      <!-- Company Info -->
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+            <span class="text-bg-primary font-bold text-xl">协</span>
+          </div>
+          <div>
+            <div class="text-text-primary font-bold text-lg">{siteData.company.name}</div>
+            <div class="text-text-muted text-xs">{siteData.company.nameEn}</div>
+          </div>
+        </div>
+        <p class="text-text-secondary text-sm leading-relaxed mb-4">
+          {siteData.company.description}
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-text-primary text-lg font-semibold mb-4">快速导航</h3>
+        <nav class="flex flex-col gap-2">
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              class="text-text-secondary hover:text-accent transition-colors text-sm"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h3 class="text-text-primary text-lg font-semibold mb-4">联系方式</h3>
+        <div class="flex flex-col gap-3 text-sm">
+          <p class="text-text-secondary">
+            <span class="text-text-muted">电话：</span>
+            {siteData.company.phone}
+          </p>
+          <p class="text-text-secondary">
+            <span class="text-text-muted">邮箱：</span>
+            {siteData.company.email}
+          </p>
+          <p class="text-text-secondary">
+            <span class="text-text-muted">地址：</span>
+            {siteData.company.address}
+          </p>
+          <p class="text-text-secondary">
+            <span class="text-text-muted">营业时间：</span>
+            {siteData.company.businessHours}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-steel/10 pt-8 text-center text-text-muted text-sm">
+      <p>&copy; {new Date().getFullYear()} {siteData.company.name}. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

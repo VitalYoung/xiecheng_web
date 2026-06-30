@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroBanner from '../components/HeroBanner.astro';
+import SectionWrapper from '../components/SectionWrapper.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import { getCollection } from 'astro:content';
+import { buildPageMeta, buildBreadcrumbLd, buildFaqLd } from '../utils/seo';
+import siteData from '../data/site.json';
+
+const services = await getCollection('services');
+const sorted = services.sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+
+const faqs = [
+  {
+    question: '激光切割的最小起订量是多少？',
+    answer: '我们支持单件打样和小批量加工，没有严格的最低起订量限制。无论是一件打样还是批量生产，我们都会认真对待。',
+  },
+  {
+    question: '支持哪些材料加工？',
+    answer: '我们主要加工碳钢（Q235、45#钢）、不锈钢（201、304、316）、铝合金（5052、6061）、铜板等金属材料。具体可加工厚度请参考各服务项目详情。',
+  },
+  {
+    question: '一般加工周期需要多久？',
+    answer: '小批量加急订单可在 1-2 个工作日内完成。批量订单根据数量和工艺复杂度，通常 3-10 个工作日。具体交期以实际沟通为准。',
+  },
+  {
+    question: '需要提供什么格式的图纸文件？',
+    answer: '支持 DWG、DXF、STEP、IGES 等常见 CAD 格式文件。如果您没有图纸，也可以提供实物样品或手绘草图，我们协助绘制加工图纸。',
+  },
+  {
+    question: '是否提供全国发货？',
+    answer: '是的，我们支持全国物流配送。与多家物流公司合作，确保产品安全、准时送达。珠三角地区可提供送货上门服务。',
+  },
+  {
+    question: '可以开增值税发票吗？',
+    answer: '可以，我司为一般纳税人，可开具 13% 增值税专用发票。',
+  },
+];
+
+const pageMeta = buildPageMeta({
+  title: '服务项目',
+  description: '协诚激光提供激光切割、钣金折弯、管材切割、焊接组装等一站式金属加工服务。支持碳钢、不锈钢、铝合金等多种材料。',
+  keywords: '激光切割加工,钣金折弯,管材激光切割,金属焊接加工,精密钣金',
+  jsonLd: [
+    buildBreadcrumbLd([{ name: '首页', url: '/' }, { name: '服务项目', url: '/services' }]),
+    buildFaqLd(faqs),
+  ],
+});
+---
+
+<BaseLayout meta={pageMeta}>
+  <HeroBanner title="服务项目" subtitle="一站式金属加工解决方案" />
+
+  <!-- Services Detail -->
+  <SectionWrapper>
+    {sorted.map((service, i) => (
+      <div class={`flex flex-col ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 items-center mb-24 last:mb-0`}>
+        <div class="flex-1">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">{service.data.title}</h2>
+          <p class="text-text-secondary mb-6 leading-relaxed">{service.body}</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+            <div>
+              <h3 class="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">技术参数</h3>
+              <div class="space-y-2">
+                {service.data.specifications.map((spec) => (
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-muted">{spec.label}</span>
+                    <span class="text-text-primary font-medium">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">适用材料</h3>
+              <div class="flex flex-wrap gap-2">
+                {service.data.materials.map((m) => (
+                  <span class="px-3 py-1 rounded-full bg-accent-subtle text-accent text-xs font-medium">{m}</span>
+                ))}
+              </div>
+              <h3 class="text-sm font-semibold text-text-muted uppercase tracking-wide mt-4 mb-3">应用领域</h3>
+              <div class="flex flex-wrap gap-2">
+                {service.data.applications.map((a) => (
+                  <span class="px-3 py-1 rounded-full bg-bg-tertiary text-text-secondary text-xs">{a}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1">
+          {service.data.image && (
+            <div class="aspect-video rounded-xl overflow-hidden bg-bg-tertiary">
+              <img
+                src={service.data.image}
+                alt={service.data.title}
+                class="w-full h-full object-cover"
+                loading="lazy"
+                width="600"
+                height="338"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
+  </SectionWrapper>
+
+  <!-- FAQ -->
+  <SectionWrapper bg="secondary">
+    <SectionHeading title="常见问题" subtitle="关于激光切割加工的常见疑问解答" />
+    <div class="max-w-3xl mx-auto space-y-4">
+      {faqs.map((faq) => (
+        <details class="group bg-bg-primary rounded-xl border border-steel/10 overflow-hidden">
+          <summary class="px-6 py-4 cursor-pointer list-none flex items-center justify-between hover:text-accent transition-colors">
+            <span class="font-medium text-text-primary">{faq.question}</span>
+            <svg class="w-5 h-5 text-text-muted group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="px-6 pb-4 text-text-secondary text-sm leading-relaxed">
+            {faq.answer}
+          </div>
+        </details>
+      ))}
+    </div>
+  </SectionWrapper>
+</BaseLayout>

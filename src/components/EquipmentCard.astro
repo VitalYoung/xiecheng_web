@@ -1,0 +1,35 @@
+---
+interface Props {
+  name: string;
+  model: string;
+  specs: { label: string; value: string }[];
+  image?: string;
+}
+
+const { name, model, specs, image } = Astro.props;
+---
+
+<div class="card group">
+  {image && (
+    <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-bg-tertiary">
+      <img
+        src={image}
+        alt={`${name} ${model}`}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+        width="600"
+        height="338"
+      />
+    </div>
+  )}
+  <h3 class="text-lg font-semibold mb-1">{name}</h3>
+  <p class="text-text-muted text-sm mb-4">{model}</p>
+  <div class="space-y-1.5">
+    {specs.map((spec) => (
+      <div class="flex justify-between text-sm">
+        <span class="text-text-muted">{spec.label}</span>
+        <span class="text-text-primary font-medium">{spec.value}</span>
+      </div>
+    ))}
+  </div>
+</div>

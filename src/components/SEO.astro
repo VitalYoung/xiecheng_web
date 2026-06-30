@@ -1,0 +1,64 @@
+---
+import type { SEOMeta } from '../utils/seo';
+import siteData from '../data/site.json';
+
+interface Props {
+  meta: SEOMeta;
+}
+
+const { meta } = Astro.props;
+const {
+  title,
+  description,
+  keywords,
+  ogImage = '/images/og-image.png',
+  ogType = 'website',
+  canonical,
+  noIndex = false,
+  jsonLd = [],
+} = meta;
+
+const fullTitle = title.includes(siteData.company.name)
+  ? title
+  : `${title} - ${siteData.company.name}`;
+const canonicalUrl = canonical
+  ? `${siteData.site.url}${canonical}`
+  : Astro.url.href;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
+{noIndex && <meta name="robots" content="noindex,nofollow" />}
+
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={`${siteData.site.url}${ogImage}`} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:type" content={ogType} />
+<meta property="og:locale" content={siteData.site.locale} />
+<meta property="og:site_name" content={siteData.company.name} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={`${siteData.site.url}${ogImage}`} />
+
+<link rel="canonical" href={canonicalUrl} />
+
+{
+  jsonLd.map((ld, i) => (
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  ))
+}
+
+{
+  siteData.seo.baiduVerification && (
+    <meta name="baidu-site-verification" content={siteData.seo.baiduVerification} />
+  )
+}
+{
+  siteData.seo.googleVerification && (
+    <meta name="google-site-verification" content={siteData.seo.googleVerification} />
+  )
+}
